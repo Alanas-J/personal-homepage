@@ -29,12 +29,6 @@ const siteS3 = new Bucket(personalSiteStack, 'PersonalSiteBucket', {
     websiteErrorDocument: 'error/index.html'
 })
 
-// Load Site into bucket
-new BucketDeployment(personalSiteStack, 'DeployWebsite', {
-    sources: [Source.asset('../astro/dist')],
-    destinationBucket: siteS3,
-});
-
 // =============================== CloudFront
 // I've decided to manually create a cert via AWS Console, was easier
 const certificate = Certificate.fromCertificateArn(personalSiteStack, 'PersonalSiteCert',
@@ -57,8 +51,15 @@ const distribution = new Distribution(personalSiteStack, 'PersonalSiteCF', {
     defaultBehavior: {
         origin: new S3Origin(siteS3),
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS
     }
+});
+
+// Load Site into bucket
+new BucketDeployment(personalSiteStack, 'DeployWebsite', {
+    sources: [Source.asset('../astro/dist')],
+    destinationBucket: siteS3,
+    distribution,
 });
 
 new ARecord(personalSiteStack, 'SiteAliasRecord', {
