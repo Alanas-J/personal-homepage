@@ -3,27 +3,30 @@ import { App, RemovalPolicy, Duration, Stack, CfnOutput  } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { AllowedMethods, Distribution, SecurityPolicyProtocol, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { ARecord, PublicHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { BlockPublicAccess, Bucket, BucketAccessControl } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
+import { DOMAIN_NAME } from './stack-config';
 
 const app = new App();
 const personalSiteStack = new Stack(app, 'PersonalSiteStack')
 
-/*
 // Cert + DNS STUFF ===================================================================
-const domainName = 'lol'
-const zone = HostedZone.fromLookup(personalSiteStack, 'PersonalSiteZone', { domainName })
+// const zone = HostedZone.fromLookup(personalSiteStack, 'PersonalSiteZone', { domainName: DOMAIN_NAME })
+const zone = new PublicHostedZone(personalSiteStack, 'PersonalSiteRouteZone', {
+    zoneName: DOMAIN_NAME
+})
 
+// I've decided to manually create a cert via AWS Console
+/*
 const certificate = new Certificate(personalSiteStack, 'PersonalSiteCert', {
-    domainName,
-    subjectAlternativeNames: [`*.${domainName}`],
-    // TODO: Return may need more props
+    domainName: DOMAIN_NAME,
+    subjectAlternativeNames: [`*.${DOMAIN_NAME}`],
+    // validation: <--- used to define ownership confirmation method.
 })
 certificate.applyRemovalPolicy(RemovalPolicy.DESTROY)
 */
-
 
 // ================================= S3
 const siteS3 = new Bucket(personalSiteStack, 'PersonalSiteBucket', {
@@ -36,7 +39,6 @@ const siteS3 = new Bucket(personalSiteStack, 'PersonalSiteBucket', {
     websiteIndexDocument: 'index.html',
     websiteErrorDocument: 'error/index.html'
 })
-// new CfnOutput(personalSiteStack, 'PersonalSiteBucketName', { value: siteS3.bucketName } )
 
 
 // Load Site into bucket
@@ -46,11 +48,14 @@ new BucketDeployment(personalSiteStack, 'DeployWebsite', {
 });
 
 // =============================== CloudFront
+const certificate = Certificate.fromCertificateArn(personalSiteStack, 'PersonalSiteCert',
+    'arn:aws:acm:us-east-1:736584645105:certificate/eece2c58-ea85-4cfa-a0a5-e123bf7390c0'
+)
 
 const distribution = new Distribution(personalSiteStack, 'PersonalSiteCF', {
-    // certificate,
+    certificate,
     defaultRootObject: 'index.html',
-    // domainNames: [domainName],
+    domainNames: [DOMAIN_NAME],
     minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_1_2016,
     errorResponses:[
         {
@@ -62,18 +67,13 @@ const distribution = new Distribution(personalSiteStack, 'PersonalSiteCF', {
     ],
     defaultBehavior: {
         origin: new S3Origin(siteS3),
-        // compress: true,
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
     }
 });
-// new CfnOutput(personalSiteStack, 'PersonalSiteCFId', { value: distribution.distributionId });
 
-/*
-// 5. Create a Route 53 alias record for the CloudFront distribution
 new ARecord(personalSiteStack, 'SiteAliasRecord', {
         zone,
-        recordName: domainName,
+        recordName: DOMAIN_NAME,
         target: RecordTarget.fromAlias(new CloudFrontTarget(distribution))
     });
-*/
