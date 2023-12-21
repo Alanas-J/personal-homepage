@@ -17,16 +17,6 @@ const zone = new PublicHostedZone(personalSiteStack, 'PersonalSiteRouteZone', {
     zoneName: DOMAIN_NAME
 })
 
-// I've decided to manually create a cert via AWS Console
-/*
-const certificate = new Certificate(personalSiteStack, 'PersonalSiteCert', {
-    domainName: DOMAIN_NAME,
-    subjectAlternativeNames: [`*.${DOMAIN_NAME}`],
-    // validation: <--- used to define ownership confirmation method.
-})
-certificate.applyRemovalPolicy(RemovalPolicy.DESTROY)
-*/
-
 // ================================= S3
 const siteS3 = new Bucket(personalSiteStack, 'PersonalSiteBucket', {
     bucketName: 'personal-site-bucket-alanas-website',
@@ -46,6 +36,7 @@ new BucketDeployment(personalSiteStack, 'DeployWebsite', {
 });
 
 // =============================== CloudFront
+// I've decided to manually create a cert via AWS Console, was easier
 const certificate = Certificate.fromCertificateArn(personalSiteStack, 'PersonalSiteCert',
     'arn:aws:acm:us-east-1:736584645105:certificate/eece2c58-ea85-4cfa-a0a5-e123bf7390c0'
 )

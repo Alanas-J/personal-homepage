@@ -7,7 +7,7 @@
     "website:preview": "npm run preview --prefix ./astro",
     "cdk": "cd ./cdk && cdk",
     "cdk:synth": "cd ./cdk && cdk synth",
-    "cdk:deploy": "cd ./cdk && cdk deploy/",
+    "cdk:deploy": "cd ./cdk && cdk deploy",
     "cdk:watch": "npm run watch --prefix ./cdk",
     "install-deps": "npm i --prefix ./astro && npm i --prefix ./cdk",
     "deploy": "npm run website:build && npm run cdk:deploy"
