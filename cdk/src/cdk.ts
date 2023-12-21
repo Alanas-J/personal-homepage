@@ -7,13 +7,12 @@ import { ARecord, PublicHostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { BlockPublicAccess, Bucket, BucketAccessControl } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
-import { DOMAIN_NAME } from './stack-config';
+import { DOMAIN_NAME, WEBSITE_DOMAIN_NAME } from './stack-config';
 
 const app = new App();
 const personalSiteStack = new Stack(app, 'PersonalSiteStack')
 
 // Cert + DNS STUFF ===================================================================
-// const zone = HostedZone.fromLookup(personalSiteStack, 'PersonalSiteZone', { domainName: DOMAIN_NAME })
 const zone = new PublicHostedZone(personalSiteStack, 'PersonalSiteRouteZone', {
     zoneName: DOMAIN_NAME
 })
@@ -40,7 +39,6 @@ const siteS3 = new Bucket(personalSiteStack, 'PersonalSiteBucket', {
     websiteErrorDocument: 'error/index.html'
 })
 
-
 // Load Site into bucket
 new BucketDeployment(personalSiteStack, 'DeployWebsite', {
     sources: [Source.asset('../astro/dist')],
@@ -55,7 +53,7 @@ const certificate = Certificate.fromCertificateArn(personalSiteStack, 'PersonalS
 const distribution = new Distribution(personalSiteStack, 'PersonalSiteCF', {
     certificate,
     defaultRootObject: 'index.html',
-    domainNames: [DOMAIN_NAME],
+    domainNames: [DOMAIN_NAME, WEBSITE_DOMAIN_NAME ],
     minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_1_2016,
     errorResponses:[
         {
@@ -76,4 +74,9 @@ new ARecord(personalSiteStack, 'SiteAliasRecord', {
         zone,
         recordName: DOMAIN_NAME,
         target: RecordTarget.fromAlias(new CloudFrontTarget(distribution))
-    });
+});
+new ARecord(personalSiteStack, 'SiteAliasRecordWWW', {
+    zone,
+    recordName: WEBSITE_DOMAIN_NAME,
+    target: RecordTarget.fromAlias(new CloudFrontTarget(distribution))
+});
