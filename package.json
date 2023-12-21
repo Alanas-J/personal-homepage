@@ -1,0 +1,15 @@
+{
+  "name": "personal-website-stack",
+  "version": "0.0.1",
+  "scripts": {
+    "website:run": "npm run dev --prefix ./astro",
+    "website:build": "npm run build --prefix ./astro",
+    "website:preview": "npm run preview --prefix ./astro",
+    "cdk": "cd ./cdk && cdk",
+    "cdk:synth": "cd ./cdk && cdk synth",
+    "cdk:deploy": "cd ./cdk && cdk deploy",
+    "cdk:watch": "npm run watch --prefix ./cdk",
+    "install-deps": "npm i --prefix ./astro && npm i --prefix ./cdk",
+    "deploy": "npm run website:build && npm run cdk:deploy"
+  }
+}
