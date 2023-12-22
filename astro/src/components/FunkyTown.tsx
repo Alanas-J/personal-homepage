@@ -20,6 +20,6 @@ export default function FunkyTown() {
     });
 
     return <audio id='funky-town' loop>
-        <source src="funky-town.mp3" type="audio/mpeg" />
+        <source src="/funky-town.mp3" type="audio/mpeg" />
     </audio> 
 }

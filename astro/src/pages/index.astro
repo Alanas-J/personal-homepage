@@ -1,23 +1,17 @@
 ---
-import FunkyTown from '../components/FunkyTown';
 import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/NavBar.astro';
 ---
 
 <Layout title="Home - Alanas J">
-	<main>
-		<h1 style="margin-bottom: 50px;">My Homepage - Alanas J</h1>
-		<FunkyTown client:only />
-		<img style="width: 100%;" src="spinning_fish.gif"> 
-</Layout>
+	<NavBar />
+	<main class="mx-auto max-w-full w-[1000px]">
+		
+		<div>
+			<h1 style="margin-bottom: 50px;">My Homepage - Alanas J</h1>
+		</div>
 
-<style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		color: rgb(72, 72, 72);
-		font-size: 20px;
-		line-height: 1.6;
-	}
-</style>
+		
+
+	</main>
+</Layout>
