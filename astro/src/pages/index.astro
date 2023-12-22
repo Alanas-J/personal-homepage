@@ -1,13 +1,12 @@
 ---
+import FunkyTown from '../components/FunkyTown';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Home - Alanas J">
 	<main>
 		<h1 style="margin-bottom: 50px;">My Homepage - Alanas J</h1>
-		<audio autoplay='true' loop>
-			<source src="funky-town.mp3" type="audio/mpeg">
-		</audio> 
+		<FunkyTown client:only />
 		<img style="width: 100%;" src="spinning_fish.gif"> 
 </Layout>
 
