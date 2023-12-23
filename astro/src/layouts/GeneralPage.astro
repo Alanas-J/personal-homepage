@@ -1,0 +1,17 @@
+---
+interface Props {
+	title: string;
+}
+import Footer from '../components/Footer.astro';
+import NavBar from '../components/NavBar.astro';
+import Layout from './Layout.astro';
+const { title } = Astro.props;
+---
+
+<Layout title={title}>
+	<NavBar />
+	<main class="flex-1">
+        <slot />
+	</main>
+	<Footer />
+</Layout>

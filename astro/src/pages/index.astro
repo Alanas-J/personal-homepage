@@ -1,17 +1,22 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import NavBar from '../components/NavBar.astro';
+import Content from '../components/Content.astro';
+import ParticleContainer from '../components/ParticleContainer';
+import GeneralPage from '../layouts/GeneralPage.astro';
 ---
 
-<Layout title="Home - Alanas J">
-	<NavBar />
-	<main class="mx-auto max-w-full w-[1000px]">
+<GeneralPage title="Home - Alanas J">
+	<Content>
+		<section class="mb-8 md:mb-10">
+			<h1 class="md:text-5xl md:font-light md:leading-[1.5] md:p-5 md:pr-10 md:w-fit md:border-b-2 border-gray-200
+			text-2xl mb-4 text-center">
+				The personal homepage
+			</h1>
+		</section>
+	</Content>
+	<div class="lg:h-[400px] h-[250px] shadow-lg">
+		<ParticleContainer client:only />
+	</div>
+	<Content>
 		
-		<div>
-			<h1 style="margin-bottom: 50px;">My Homepage - Alanas J</h1>
-		</div>
-
-		
-
-	</main>
-</Layout>
+	</Content>
+</GeneralPage>
