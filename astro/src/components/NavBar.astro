@@ -8,7 +8,11 @@
         <div class="flex items-center md:space-x-4 space-x-4 text-lg">
             <a class="nav-anchor" href="/fish">Fish Spin</a>
             <a class="nav-anchor" href="/portfolio">Portfolio</a>
-            <input id="theme-switch" type="checkbox" class="toggle rotate-90 transition-none" />
+            <input 
+            id="theme-switch" type="checkbox" 
+            class="toggle rotate-90 transition-none
+            dark:bg-gray-50 dark:[--tglbg:rgb(17,24,39)] bg-gray-900 hover:bg-slate-700 dark:hover:bg-gray-300
+            " />
         </div>
     </div>
 </nav>
@@ -31,6 +35,9 @@
             document.documentElement.setAttribute("data-theme", 'light')
             themeToggle.checked = false;
         }
+        setTimeout(() => {
+            themeToggle.classList.remove('transition-none')
+        }, 50)
         themeToggle.addEventListener("change", switchTheme, false);
     }
     function switchTheme(e: any) {

@@ -80,10 +80,11 @@ function addDynamicValuesToOptions(options: any): void {
         options.particles.links.distance = 50
         options.particles.number.value = 60
     } else {
-        options.particles.links.distance = 50
-        options.particles.number.value = 30
+        options.particles.links.distance = 60
+        options.particles.number.value = 22
+        options.particles.size.value.max = 3
+        options.particles.move.speed = 1
     }
-    console.log(vw)
 }
 addDynamicValuesToOptions(options)
 
