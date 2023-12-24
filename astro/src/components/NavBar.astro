@@ -1,14 +1,51 @@
-<nav 
-    class='pb-6 pt-4 flex shadow-md sticky top-0 backdrop-blur-lg px-3 bg-gray-50'
+<nav
+    class="pb-6 pt-4 flex shadow-md sticky top-0 backdrop-blur-lg px-3 bg-gray-50 dark:bg-gray-900"
 >
     <div class="mx-auto max-w-full w-[1200px] flex">
-        <div class='text-5xl font-extralight flex-1'>
+        <div class="md:text-5xl text-2xl font-extralight flex-1">
             <a href="/" class="cursor-pointer">Alanas J</a>
         </div>
-        <div class='flex items-center space-x-6 text-lg'>
-            <a class='nav-anchor' href="/fish">Fish Spin</a>
-            <a class='nav-anchor' href="/portfolio">Portfolio</a>
-            <a class='nav-anchor' href="/photos">Photography</a>
+        <div class="flex items-center md:space-x-4 space-x-4 text-lg">
+            <a class="nav-anchor" href="/fish">Fish Spin</a>
+            <a class="nav-anchor" href="/portfolio">Portfolio</a>
+            <input id="theme-switch" type="checkbox" class="toggle rotate-90" checked />
         </div>
     </div>
 </nav>
+
+<script>
+    // Can be improved to take OS preference via window.matchMedia('(prefers-color-scheme: dark)').matches
+    const themeToggle = document.querySelector(
+        'input[type="checkbox"]#theme-switch',
+    ) as any;
+
+    const currentTheme = localStorage.getItem("theme");
+
+    if (currentTheme) {
+        document.documentElement.setAttribute("data-theme", currentTheme);
+        if (currentTheme === "dark") {
+            themeToggle.checked = true;
+            document.documentElement.classList.add('dark')
+        }
+    }
+
+    function switchTheme(e: any) {
+        if (e.target.checked) {
+            document.documentElement.setAttribute("data-theme", "dark");
+            localStorage.setItem("theme", "dark");
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+            localStorage.setItem("theme", "light");
+            document.documentElement.classList.remove('dark')
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+        } else {
+        document.documentElement.classList.remove('dark')
+        }
+    }
+
+    themeToggle.addEventListener("change", switchTheme, false);
+</script>
