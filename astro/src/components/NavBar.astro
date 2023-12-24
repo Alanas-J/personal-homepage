@@ -8,27 +8,28 @@
         <div class="flex items-center md:space-x-4 space-x-4 text-lg">
             <a class="nav-anchor" href="/fish">Fish Spin</a>
             <a class="nav-anchor" href="/portfolio">Portfolio</a>
-            <input id="theme-switch" type="checkbox" class="toggle rotate-90" checked />
+            <input id="theme-switch" type="checkbox" class="toggle rotate-90" />
         </div>
     </div>
 </nav>
 
 <script>
-    // Can be improved to take OS preference via window.matchMedia('(prefers-color-scheme: dark)').matches
-    const themeToggle = document.querySelector(
-        'input[type="checkbox"]#theme-switch',
-    ) as any;
-
-    const currentTheme = localStorage.getItem("theme");
-
-    if (currentTheme) {
-        document.documentElement.setAttribute("data-theme", currentTheme);
-        if (currentTheme === "dark") {
-            themeToggle.checked = true;
-            document.documentElement.classList.add('dark')
+    function themeInit(): void {  
+        // Can be improved to take OS preference via window.matchMedia('(prefers-color-scheme: dark)').matches
+        const themeToggle = document.querySelector(
+            'input[type="checkbox"]#theme-switch',
+        ) as any;
+    
+        const currentTheme = localStorage.getItem("theme");
+        if (currentTheme) {
+            document.documentElement.setAttribute("data-theme", currentTheme);
+            if (currentTheme === "dark") {
+                themeToggle.checked = true;
+                document.documentElement.classList.add('dark')
+            }
         }
+        themeToggle.addEventListener("change", switchTheme, false);
     }
-
     function switchTheme(e: any) {
         if (e.target.checked) {
             document.documentElement.setAttribute("data-theme", "dark");
@@ -40,12 +41,15 @@
             document.documentElement.classList.remove('dark')
         }
 
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage))) {
         document.documentElement.classList.add('dark')
         } else {
         document.documentElement.classList.remove('dark')
         }
     }
 
-    themeToggle.addEventListener("change", switchTheme, false);
+    document.addEventListener("astro:after-swap", () => {
+        themeInit()
+    });
+    themeInit()
 </script>
