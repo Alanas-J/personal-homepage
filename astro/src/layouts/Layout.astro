@@ -57,3 +57,19 @@ import '../main.css'
 			monospace;
 	}
 </style>
+<script>
+	function themeInit(): void {  
+        const currentTheme = localStorage.getItem("theme");
+        document.documentElement.setAttribute("data-theme", currentTheme ?? 'light');
+        if (currentTheme === "dark") {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.setAttribute("data-theme", 'light')
+        }
+    }
+    document.addEventListener("astro:after-swap", () => {
+        themeInit()
+    });
+    themeInit()
+
+</script>

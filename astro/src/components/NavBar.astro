@@ -18,21 +18,16 @@
 </nav>
 
 <script>
-    function themeInit(): void {  
+    function toggleStateInit(): void {  
         // Can be improved to take OS preference via window.matchMedia('(prefers-color-scheme: dark)').matches
         const themeToggle = document.querySelector(
             'input[type="checkbox"]#theme-switch',
         ) as any;
     
         const currentTheme = localStorage.getItem("theme");
-        if (currentTheme) {
-            document.documentElement.setAttribute("data-theme", currentTheme);
-            if (currentTheme === "dark") {
-                themeToggle.checked = true;
-                document.documentElement.classList.add('dark')
-            }
+        if (currentTheme === "dark") {
+            themeToggle.checked = true;
         } else {
-            document.documentElement.setAttribute("data-theme", 'light')
             themeToggle.checked = false;
         }
         setTimeout(() => {
@@ -40,6 +35,11 @@
         }, 50)
         themeToggle.addEventListener("change", switchTheme, false);
     }
+    document.addEventListener("astro:after-swap", () => {
+        toggleStateInit()
+    });
+    toggleStateInit()
+
     function switchTheme(e: any) {
         if (e.target.checked) {
             document.documentElement.setAttribute("data-theme", "dark");
@@ -51,15 +51,10 @@
             document.documentElement.classList.remove('dark')
         }
 
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage))) {
-        document.documentElement.classList.add('dark')
+        if (localStorage.theme === 'dark') {
+            document.documentElement.classList.add('dark')
         } else {
-        document.documentElement.classList.remove('dark')
+            document.documentElement.classList.remove('dark')
         }
     }
-
-    document.addEventListener("astro:after-swap", () => {
-        themeInit()
-    });
-    themeInit()
 </script>
